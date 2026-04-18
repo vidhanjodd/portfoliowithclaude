@@ -248,22 +248,66 @@
    if (modalOverlay) modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
    
-   const contactForm = document.getElementById('contactForm');
-   if (contactForm) {
-     contactForm.addEventListener('submit', (e) => {
-       e.preventDefault();
-       const btn = contactForm.querySelector('button[type="submit"]');
-       const orig = btn.innerHTML;
-       btn.innerHTML = '<span>Message Sent ✓</span>';
-       btn.style.background = '#22c55e';
-       setTimeout(() => {
-         btn.innerHTML = orig;
-         btn.style.background = '';
-         contactForm.reset();
-         closeModal();
-       }, 2200);
-     });
-   }
+  const EMAILJS_PUBLIC_KEY  = 'cz_8hnONdkM-1NIVI';
+  const EMAILJS_SERVICE_ID  = 'service_vw00rtg';
+  const EMAILJS_TEMPLATE_ID = 'template_vvj5ro2';
+  
+  if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+    window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  }
+  
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = contactForm.querySelector('button[type="submit"]');
+      const orig = btn.innerHTML;
+      const name = document.getElementById('formName')?.value.trim() || '';
+      const email = document.getElementById('formEmail')?.value.trim() || '';
+      const message = document.getElementById('formMessage')?.value.trim() || '';
+  
+      if (!window.emailjs || EMAILJS_PUBLIC_KEY === 'YOUR_EMAILJS_PUBLIC_KEY') {
+        btn.innerHTML = '<span>Configure EmailJS First</span>';
+        btn.style.background = '#f59e0b';
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.style.background = '';
+        }, 2200);
+        return;
+      }
+  
+      btn.disabled = true;
+      btn.innerHTML = '<span>Sending...</span>';
+  
+      try {
+        await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          from_name: name,
+          from_email: email,
+          message,
+          reply_to: email
+        });
+  
+        btn.innerHTML = '<span>Message Sent ✓</span>';
+        btn.style.background = '#22c55e';
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.style.background = '';
+          btn.disabled = false;
+          contactForm.reset();
+          closeModal();
+        }, 1800);
+      } catch (error) {
+        console.error('EmailJS send failed:', error);
+        btn.innerHTML = '<span>Failed. Try Again</span>';
+        btn.style.background = '#ef4444';
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.style.background = '';
+          btn.disabled = false;
+        }, 2200);
+      }
+    });
+  }
    
    /* ============================================
       10. HERO PARALLAX
