@@ -283,6 +283,7 @@
         await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
           from_name: name,
           from_email: email,
+          time: new Date().toLocaleString(),
           message,
           reply_to: email
         });
