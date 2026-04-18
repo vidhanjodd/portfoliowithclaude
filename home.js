@@ -156,7 +156,6 @@
      { name: 'Spring Boot',    category: 'Framework',   icon: '🌿' },
      { name: 'Spring Security',category: 'Framework',   icon: '🔒' },
      { name: 'Spring Data JPA',category: 'Framework',   icon: '🗃️' },
-     { name: 'React.js',       category: 'Framework',   icon: '⚛️' },
      { name: 'Hibernate ORM',  category: 'Database',    icon: '🗄️' },
      { name: 'PostgreSQL',     category: 'Database',    icon: '🐘' },
      { name: 'MySQL',          category: 'Database',    icon: '🐬' },
